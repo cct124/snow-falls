@@ -1,0 +1,25 @@
+{
+  "name": "snow-falls",
+  "version": "1.0.0",
+  "description": "The snow falls and the wind blows",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "dev": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cct124/snow-falls.git"
+  },
+  "keywords": [],
+  "author": "Jane",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cct124/snow-falls/issues"
+  },
+  "homepage": "https://github.com/cct124/snow-falls#readme",
+  "devDependencies": {
+    "typescript": "^4.5.4"
+  }
+}

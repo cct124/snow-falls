@@ -7,10 +7,10 @@ import Particle from "./Particle";
 export interface GraphicsSonwOptions {
   app: PIXI.Application;
   radius: number;
-  mass?: number;
-  cd?: number;
-  rho?: number;
-  ag?: number;
+  mass: number;
+  cd: number;
+  rho: number;
+  ag: number;
 }
 
 export default class GraphicsSonw extends Particle {
@@ -68,19 +68,17 @@ export default class GraphicsSonw extends Particle {
    */
   animation = false;
 
+  windEffect = true;
+
   constructor(options: GraphicsSonwOptions) {
     super();
-    options = mixins(
-      { mass: 0.0005, cd: 0.47, rho: PHYSICAL.RHO, ag: PHYSICAL.AG },
-      options
-    );
-    
+
     this.app = options.app;
     this.radius = options.radius;
-    this.mass = options.mass!;
-    this.cd = options.cd!;
-    this.rho = options.rho!;
-    this.ag = options.ag!;
+    this.mass = options.mass;
+    this.cd = options.cd;
+    this.rho = options.rho;
+    this.ag = options.ag;
     this.A = (Math.PI * this.radius * this.radius) / 10000;
     this.app.ticker.add((dt) => this.update(dt));
     this.stops = new Event<GraphicsSonw>();
@@ -108,6 +106,12 @@ export default class GraphicsSonw extends Particle {
   stop() {
     this.animation = false;
     this.stops.run(this);
+  }
+
+  hairDryer(xf = 0, yf = 0) {
+    if (!this.windEffect) return;
+    this.XF = xf;
+    this.YF = yf;
   }
 
   /**

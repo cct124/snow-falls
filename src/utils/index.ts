@@ -64,3 +64,14 @@ export function shuffle(array: unknown[]): unknown[] {
 export function mixins<T>(t1: unknown, t2: T): T {
   return Object.assign(t1, t2);
 }
+
+/**
+ * 给定一个概率将返回符合该概率的true值
+ * @param p
+ * @returns
+ */
+export function probability(p: number) {
+  const pr = p * 100;
+  const ran = randomNum(100, 0);
+  return pr >= ran;
+}

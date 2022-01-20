@@ -5,13 +5,13 @@ import GraphicsSonw from "./GraphicsSonw";
 export interface SnowflakeOptions {
   app: PIXI.Application;
   color?: number;
-  size?: number;
+  size: number;
   x?: number;
   y?: number;
-  cd?: number;
-  mass?: number;
-  rho?: number;
-  ag?: number;
+  cd: number;
+  mass: number;
+  rho: number;
+  ag: number;
 }
 
 export default class Snowflake extends GraphicsSonw {
@@ -27,15 +27,15 @@ export default class Snowflake extends GraphicsSonw {
 
   constructor(options: SnowflakeOptions) {
     const { size, color, x, y } = mixins(
-      { color: 0xffffff, size: 2, x: 0, y: 0 },
+      { color: 0xffffff, x: 0, y: 0 },
       options
     );
     super({
-      radius: size!,
+      radius: size,
       ...options,
     });
     this.color = color!;
-    this.size = size!;
+    this.size = size;
     this.x = x!;
     this.y = y!;
     this.graphics = new PIXI.Graphics();

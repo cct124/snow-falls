@@ -1,8 +1,10 @@
 import * as PIXI from "pixi.js";
 
 export default class Particle extends PIXI.Container {
-  constructor() {
+  id: number;
+  constructor(id: number) {
     super();
+    this.id = id;
   }
 
   mx(x: number) {
@@ -11,5 +13,9 @@ export default class Particle extends PIXI.Container {
 
   my(y: number) {
     this.y = y;
+  }
+
+  mr(r: number) {
+    this.rotation = r;
   }
 }

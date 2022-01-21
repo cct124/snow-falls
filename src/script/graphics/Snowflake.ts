@@ -3,6 +3,7 @@ import { mixins } from "../../utils";
 import GraphicsSonw from "./GraphicsSonw";
 
 export interface SnowflakeOptions {
+  id: number;
   app: PIXI.Application;
   color?: number;
   size: number;
@@ -12,10 +13,12 @@ export interface SnowflakeOptions {
   mass: number;
   rho: number;
   ag: number;
+  texture?: PIXI.Texture;
+  createFunction?: () => void | undefined;
 }
 
 export default class Snowflake extends GraphicsSonw {
-  private graphics: PIXI.Graphics;
+  private graphics: PIXI.Graphics | undefined;
   /**
    * 图形颜色
    */
@@ -25,8 +28,12 @@ export default class Snowflake extends GraphicsSonw {
    */
   size: number;
 
+  texture?: PIXI.Texture;
+
+  createFunction?: () => void | undefined;
+
   constructor(options: SnowflakeOptions) {
-    const { size, color, x, y } = mixins(
+    const { size, color, x, y, texture, createFunction, id } = mixins(
       { color: 0xffffff, x: 0, y: 0 },
       options
     );
@@ -38,14 +45,31 @@ export default class Snowflake extends GraphicsSonw {
     this.size = size;
     this.x = x!;
     this.y = y!;
-    this.graphics = new PIXI.Graphics();
-    this.circle();
+    this.texture = texture;
+    this.createFunction = createFunction;
+    if (this.createFunction) {
+      this.createFunction.call(this);
+    } else {
+      if (texture) {
+        this.bitmap(texture);
+      } else {
+        this.graphics = new PIXI.Graphics();
+        this.circle(this.graphics);
+      }
+    }
   }
 
-  circle() {
-    this.graphics.beginFill(this.color);
-    this.graphics.drawCircle(0, 0, this.size);
-    this.graphics.endFill();
-    this.addChild(this.graphics);
+  bitmap(texture: PIXI.Texture) {
+    const sprite = new PIXI.Sprite(texture);
+    sprite.width = this.size;
+    sprite.height = this.size;
+    this.addChild(sprite);
+  }
+
+  circle(graphics: PIXI.Graphics) {
+    graphics.beginFill(this.color);
+    graphics.drawCircle(0, 0, this.size);
+    graphics.endFill();
+    this.addChild(graphics);
   }
 }

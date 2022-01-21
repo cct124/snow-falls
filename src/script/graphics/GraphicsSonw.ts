@@ -11,6 +11,7 @@ export interface GraphicsSonwOptions {
   cd: number;
   rho: number;
   ag: number;
+  id: number;
 }
 
 export default class GraphicsSonw extends Particle {
@@ -68,10 +69,8 @@ export default class GraphicsSonw extends Particle {
    */
   animation = false;
 
-  windEffect = true;
-
   constructor(options: GraphicsSonwOptions) {
-    super();
+    super(options.id);
 
     this.app = options.app;
     this.radius = options.radius;
@@ -87,6 +86,7 @@ export default class GraphicsSonw extends Particle {
   update(dt: number) {
     if (this.animation) {
       const offset = this.offset();
+
       this.mx(offset.x);
       this.my(offset.y);
       if (
@@ -108,8 +108,7 @@ export default class GraphicsSonw extends Particle {
     this.stops.run(this);
   }
 
-  hairDryer(xf = 0, yf = 0) {
-    if (!this.windEffect) return;
+  setForce(xf = 0, yf = 0) {
     this.XF = xf;
     this.YF = yf;
   }

@@ -3,9 +3,12 @@ import GraphicsSonw from "./GraphicsSonw";
 export default class GraphicsSonwPool {
   graphicsSonw: GraphicsSonw[] = [];
   graphicsSonwNum = 0;
-  createParticle: () => GraphicsSonw;
+  createParticle: (id: number) => GraphicsSonw;
 
-  constructor(createParticle: () => GraphicsSonw, graphicsSonwNum: number) {
+  constructor(
+    createParticle: (id: number) => GraphicsSonw,
+    graphicsSonwNum: number
+  ) {
     this.graphicsSonwNum = graphicsSonwNum;
     this.createParticle = createParticle;
     this.fill();
@@ -13,7 +16,7 @@ export default class GraphicsSonwPool {
 
   fill() {
     for (let i = 0; i < this.graphicsSonwNum; i++) {
-      this.add(this.createParticle());
+      this.add(this.createParticle(i));
     }
   }
 

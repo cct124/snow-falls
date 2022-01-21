@@ -6,6 +6,7 @@ import Snowflake from "./graphics/Snowflake";
 import GraphicsSonw from "./graphics/GraphicsSonw";
 import { PHYSICAL, WINDS } from "../config";
 import Wind, { WindField } from "./nature/Wind";
+import Module from "./modules/module";
 
 interface SnowPixi {
   app: PIXI.Application;
@@ -20,7 +21,7 @@ export interface SnowOptions {
   /**
    * 创建下雪动画的DOM容器
    */
-  view: HTMLElement;
+  view?: HTMLElement;
   /**
    * 在一屏中雪花的最大粒子数量
    */
@@ -53,9 +54,24 @@ export interface SnowOptions {
   snowflakeMass?: [number, number];
 
   /**
-   * 开启风力作用
+   * 开启最大渲染
    */
-  windEffect?: WindOptions;
+  maxRenderSnow?: boolean;
+  /**
+   * 最大渲染延迟
+   */
+  maxRenderSnowDelay?: [number, number];
+  /**
+   * 雪花纹理路径
+   */
+  snowflakeTextureSrc?: string;
+
+  /**
+   * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
+   */
+  graphicsCreateFunction?: () => void | undefined;
+
+  modules?: Module[];
 }
 
 export default class Snow {
@@ -75,7 +91,7 @@ export default class Snow {
   /**
    * 雪花对象池
    */
-  graphicsSonwPool: GraphicsSonwPool;
+  graphicsSonwPool: GraphicsSonwPool | undefined;
   /**
    * 在一屏中雪花的最大粒子数量
    */
@@ -114,16 +130,35 @@ export default class Snow {
    */
   wind: Wind | undefined;
   /**
-   * 不受风力影响的雪花百分比
+   * 受风力影响的雪花百分比
    */
-  windInvaSnowPerc = 0.2;
-  switchWindTime = [4000, 2000];
+  windSnowPerc = 0.2;
   /**
-   * 开启风力作用
+   * 最大渲染延迟
    */
-  windEffect: WindOptions | undefined;
+  maxRenderSnowDelay: [number, number];
+  /**
+   * 载入的模块
+   */
+  modules: Set<Module>;
+  /**
+   * 开启最大渲染
+   */
+  maxRenderSnow: boolean;
+  /**
+   * 位图路径
+   */
+  snowflakeTextureSrc?: string;
 
-  modules = new Set<[() => void, boolean]>();
+  loader: PIXI.Loader | undefined;
+  /**
+   * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
+   */
+  graphicsCreateFunction?: () => void | undefined;
+  /**
+   * 对象池最大对象数量
+   */
+  graphicsSonwPoolMax = 0;
 
   constructor(options: SnowOptions) {
     const {
@@ -135,12 +170,15 @@ export default class Snow {
       snowflakeSize,
       snowCoeDrag,
       snowflakeMass,
-      windEffect,
+      maxRenderSnow,
+      maxRenderSnowDelay,
+      snowflakeTextureSrc,
+      modules,
+      graphicsCreateFunction,
     } = mixins(
       {
         view: document.body,
         snowflakeNum: 200,
-        createSnowMaxDelay: 2000,
         redundancy: 50,
         rho: PHYSICAL.RHO,
         ag: PHYSICAL.AG,
@@ -151,10 +189,14 @@ export default class Snow {
           enable: true,
           winds: WINDS,
         },
+        maxRenderSnow: false,
+        maxRenderSnowDelay: [4000, 1000],
+        switchWindTime: [4000, 2000],
+        modules: [],
       },
       options
     );
-    this.view = view;
+    this.view = view!;
     this.width = this.view.offsetWidth;
     this.height = this.view.offsetHeight;
     this.pixi = {
@@ -171,58 +213,73 @@ export default class Snow {
     this.snowflakeSize = snowflakeSize!;
     this.snowCoeDrag = snowCoeDrag!;
     this.snowflakeMass = snowflakeMass!;
-    this.windEffect = windEffect;
-    this.graphicsSonwPool = new GraphicsSonwPool(
-      () => this.newSnowflake(),
-      this.snowflakeNum + this.redundancy
-    );
-    this.view.appendChild(this.pixi.app.view);
-    this.pixi.app.ticker.add((dt) => this.tickerCreateSnowflake(dt));
-    this.registerModules();
-    this.enableModules();
+    this.maxRenderSnow = maxRenderSnow!;
+    this.maxRenderSnowDelay = maxRenderSnowDelay!;
+    this.snowflakeTextureSrc = snowflakeTextureSrc;
+    this.graphicsCreateFunction = graphicsCreateFunction;
+    this.graphicsSonwPoolMax = this.snowflakeNum + this.redundancy;
+    //导入模块
+    this.modules = new Set(modules);
+
+    if (this.snowflakeTextureSrc) {
+      this.loader = new PIXI.Loader();
+      this.loader.onComplete.add((loader) => {
+        this.loadTexture(loader);
+      });
+      this.loader.add("snow", this.snowflakeTextureSrc);
+      this.loader.load();
+    } else {
+      this.graphicsSonwPool = new GraphicsSonwPool(
+        (id: number) => this.newSnowflake(id),
+        this.graphicsSonwPoolMax
+      );
+      this.view.appendChild(this.pixi.app.view);
+      this.pixi.app.ticker.add((dt) => this.tickerCreateSnowflake(dt));
+    }
+
+    this.insertModules();
   }
 
-  registerModules() {
-    this.registerModule(this.initWindEffect, this.windEffect!.enable);
-  }
-
-  registerModule(fn: () => void, enable: boolean): () => void {
-    this.modules.add([fn, enable]);
-    return fn;
-  }
-  enableModules() {
-    this.modules.forEach(([fn, bool]) => {
-      if (bool) fn.call(this);
+  /**
+   * 载入模块
+   */
+  insertModules() {
+    this.modules.forEach((module) => {
+      module.insert(this);
     });
   }
 
-  initWindEffect() {
-    this.wind = new Wind({ height: this.height, winds: WINDS });
-    this.switchWind();
-    this.pixi.app.ticker.add((dt) => this.hairDryer(dt));
+  loadTexture(loader: PIXI.Loader) {
+    this.graphicsSonwPool = new GraphicsSonwPool(
+      (id: number) => this.newSnowflake(id, loader.resources["snow"].texture),
+      this.graphicsSonwPoolMax
+    );
+    this.view.appendChild(this.pixi.app.view);
+    this.pixi.app.ticker.add((dt) => this.tickerCreateSnowflake(dt));
   }
 
-  newSnowflake() {
+  newSnowflake(id: number, texture?: PIXI.Texture) {
     const snowflake = new Snowflake({
+      id: id,
       app: this.pixi.app,
       size: randomNum(this.snowflakeSize[0], this.snowflakeSize[1], 2),
       cd: randomNum(this.snowCoeDrag[0], this.snowCoeDrag[1], 2),
       mass: randomNum(this.snowflakeMass[0], this.snowflakeMass[1], 4),
       rho: this.rho,
       ag: this.ag,
+      texture: texture,
+      createFunction: this.graphicsCreateFunction,
     });
-    snowflake.windEffect = probability(this.windInvaSnowPerc);
+    // snowflake.windEffect = probability(this.windSnowPerc);
     snowflake.stops.add((particle) => {
       this.pixi.app.stage.removeChild(particle);
       this.snowflakes.delete(particle);
-      this.graphicsSonwPool.add(particle);
+      this.graphicsSonwPool!.add(particle);
     });
     return snowflake;
   }
 
-  createSnowflake() {
-    const particle = this.graphicsSonwPool.get()!;
-    this.snowflakes.add(particle);
+  createSnowflake(particle: GraphicsSonw) {
     const x = randomNum(this.width, 0);
     particle.mx(x);
     particle.my(0);
@@ -232,25 +289,49 @@ export default class Snow {
   }
 
   tickerCreateSnowflake(dt: number) {
-    if (this.snowflakes.size < this.snowflakeNum) {
-      this.createSnowflake();
+    if (this.maxRenderSnow) {
+      this.maxRender();
+    } else {
+      this.gentleRender();
     }
   }
 
-  hairDryer(dt: number) {
-    this.snowflakes.forEach((sonw) => {
-      const { xf } = this.wind!.getCurrentWindForce(sonw.y);
-      sonw.hairDryer(xf);
-    });
+  gentleRender() {
+    if (this.snowflakes.size < this.snowflakeNum) {
+      const particle = this.graphicsSonwPool!.get()!;
+      this.snowflakes.add(particle);
+      this.createSnowflake(particle);
+    }
   }
 
-  switchWind() {
-    const timeout = randomNum(this.switchWindTime[0], this.switchWindTime[1]);
-    setTimeout(() => {
-      this.wind!.nextWindField();
-      this.switchWind();
-    }, timeout);
+  maxRender() {
+    while (this.snowflakes.size < this.snowflakeNum) {
+      const particle = this.graphicsSonwPool!.get()!;
+      this.snowflakes.add(particle);
+      if (particle.y > 0) {
+        this.createSnowflake(particle);
+      } else {
+        setTimeout(() => {
+          this.createSnowflake(particle);
+        }, randomNum(this.maxRenderSnowDelay[0], this.maxRenderSnowDelay[1]));
+      }
+    }
   }
+
+  // hairDryer(dt: number) {
+  //   this.snowflakes.forEach((sonw) => {
+  //     const { xf } = this.wind!.getCurrentWindForce(sonw.y);
+  //     sonw.hairDryer(xf);
+  //   });
+  // }
+
+  // switchWind() {
+  //   const timeout = randomNum(this.switchWindTime[0], this.switchWindTime[1]);
+  //   setTimeout(() => {
+  //     this.wind!.nextWindField();
+  //     this.switchWind();
+  //   }, timeout);
+  // }
 
   test() {
     let circle = new PIXI.Graphics();

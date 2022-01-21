@@ -1,2 +1,3 @@
 import Snow from "./script/Snow";
-export default Snow;
+import Wind from "./script/nature/Wind";
+export default { Snow, Wind };

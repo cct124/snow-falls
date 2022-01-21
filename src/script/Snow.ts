@@ -5,7 +5,7 @@ import GraphicsSonwPool from "./graphics/GraphicsSonwPool";
 import Snowflake from "./graphics/Snowflake";
 import GraphicsSonw from "./graphics/GraphicsSonw";
 import { PHYSICAL, WINDS } from "../config";
-import Wind, { WindField } from "./nature/Wind";
+import Wind, { WindField } from "./physics/Wind";
 import Module from "./modules/module";
 
 interface SnowPixi {
@@ -101,7 +101,7 @@ export default class Snow {
    */
   redundancy = 0;
   /**
-   * 屏幕中渲染的雪花保存在这里
+   * 屏幕中渲染雪花的集合
    */
   snowflakes = new Set<GraphicsSonw>();
   /**
@@ -298,22 +298,30 @@ export default class Snow {
 
   gentleRender() {
     if (this.snowflakes.size < this.snowflakeNum) {
-      const particle = this.graphicsSonwPool!.get()!;
-      this.snowflakes.add(particle);
-      this.createSnowflake(particle);
+      if (this.graphicsSonwPool) {
+        const particle = this.graphicsSonwPool.get();
+        if (particle) {
+          this.snowflakes.add(particle);
+          this.createSnowflake(particle);
+        }
+      }
     }
   }
 
   maxRender() {
     while (this.snowflakes.size < this.snowflakeNum) {
-      const particle = this.graphicsSonwPool!.get()!;
-      this.snowflakes.add(particle);
-      if (particle.y > 0) {
-        this.createSnowflake(particle);
-      } else {
-        setTimeout(() => {
-          this.createSnowflake(particle);
-        }, randomNum(this.maxRenderSnowDelay[0], this.maxRenderSnowDelay[1]));
+      if (this.graphicsSonwPool) {
+        const particle = this.graphicsSonwPool.get();
+        if (particle) {
+          this.snowflakes.add(particle);
+          if (particle.y > 0) {
+            this.createSnowflake(particle);
+          } else {
+            setTimeout(() => {
+              this.createSnowflake(particle);
+            }, randomNum(this.maxRenderSnowDelay[0], this.maxRenderSnowDelay[1]));
+          }
+        }
       }
     }
   }

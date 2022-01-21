@@ -17,9 +17,19 @@
   <body>
     <script src="/index.js"></script>
     <script>
-      const { Snow, Wind } = SnowFalls;
+      const { Snow, Wind, Borders } = SnowFalls;
       new Snow({
-        modules: [new Wind()],
+        modules: [
+          new Wind(),
+          new Borders({
+            polygons: [
+              [
+                [100, 400],
+                [200, 400],
+              ],
+            ],
+          }),
+        ],
       });
     </script>
   </body>

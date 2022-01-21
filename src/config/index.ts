@@ -1,4 +1,4 @@
-import { WindField } from "../script/nature/Wind";
+import { WindField } from "../script/physics/Wind";
 
 export const PHYSICAL = {
   /**

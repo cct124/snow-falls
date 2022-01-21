@@ -70,10 +70,10 @@ export default class Wind extends Module {
     }, timeout);
   }
 
-  insert(snow: Snow): boolean {
+  insert(snow: Snow): this {
     if (this.height === 0) this.height = snow.pixi.app.view.offsetHeight;
     this.switchWind();
     snow.pixi.app.ticker.add((dt) => this.hairDryer(dt, snow));
-    return true;
+    return this;
   }
 }

@@ -2,7 +2,7 @@ import GraphicsSonw from "../graphics/GraphicsSonw";
 
 export default class Polygon {
   points: [number, number][];
-  snow = new Set<GraphicsSonw>();
+  snow: GraphicsSonw[] = [];
 
   constructor(points: [number, number][]) {
     this.points = points;
@@ -77,5 +77,14 @@ export default class Polygon {
     const a = t1[0] - t2[0];
     const b = t1[1] - t2[1];
     return Math.sqrt(a * a + b * b);
+  }
+
+  updatePolygon() {
+    
+    // this.snow.sort((a, b) => {
+    //   return a.y - b.y;
+    // });
+    // const point: [number, number][] = this.snow.map((snow) => [snow.x, snow.y]);
+    // this.points.unshift(...point);
   }
 }

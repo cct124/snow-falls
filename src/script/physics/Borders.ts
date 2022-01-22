@@ -39,7 +39,8 @@ export default class Borders extends Module {
       this.polygons.forEach((polygon) => {
         if (polygon.inside([graphics.x, graphics.y])) {
           graphics.animation = false;
-          polygon.snow.add(graphics);
+          polygon.snow.push(graphics);
+          polygon.updatePolygon();
           snow.snowflakes.delete(graphics);
         }
       });

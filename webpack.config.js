@@ -1,9 +1,10 @@
 const path = require("path");
 
+const ENV = process.argv[2] === "--mode=production";
+
 module.exports = {
-  mode: "development",
   entry: "./src/index.ts",
-  devtool: "inline-source-map",
+  devtool: !ENV,
   module: {
     rules: [
       {

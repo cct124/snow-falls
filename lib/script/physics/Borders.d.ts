@@ -2,9 +2,18 @@ import Module from "../modules/module";
 import Snow from "../Snow";
 import Polygon from "./Polygon";
 export interface BordersOptions {
+    /**
+     * 边界集合
+     */
     polygons: {
+        /**
+         * 边界的第一个点和第二个点
+         */
         points: [number, number][];
-        snowMaxNum: number;
+        /**
+         * 边界的最大积雪数量
+         */
+        snowMaxNum?: number;
     }[];
     showPolygon?: boolean;
 }

@@ -1,2 +1,132 @@
 # snow-falls
-The snow falls and the wind blows
+
+北风啸啸，雪花飘飘，CPU 在燃烧 😘
+_The snow falls and the wind blows cpu is burning_
+
+## 目录
+
+- [安装](#安装)
+- [示例](#示例)
+- [配置参数](#配置参数)
+
+## 安装
+
+npm:
+
+```sh
+ npm install snow-falls
+```
+
+CDN:
+
+```html
+<script src="./../lib/index.js"></script>
+```
+
+## 示例
+
+> 克隆这个仓库，运行下面的命令查看效果
+
+```sh
+ npm i
+ npm run dev
+```
+
+<div style="margin-bottom: 5px">
+  <img src="docs/example_01.png" width="200" />
+</div>
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Example</title>
+    <style>
+      html,
+      body,
+      .home,
+      .background {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .home {
+        position: relative;
+        background-color: #282a36;
+      }
+
+      .background {
+        position: absolute;
+      }
+
+      .box-1 {
+        width: 100px;
+        height: 50px;
+        background-color: #519aba;
+        position: absolute;
+        top: 600px;
+        left: 30%;
+      }
+
+      .box-2 {
+        width: 200px;
+        height: 50px;
+        background-color: #e37933;
+        position: absolute;
+        top: 300px;
+        left: 60%;
+      }
+
+      .box-3 {
+        width: 100px;
+        height: 50px;
+        background-color: #e91e63;
+        position: absolute;
+        top: 200px;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="home">
+      <div class="box-1 border"></div>
+      <div class="box-2 border"></div>
+      <div class="box-3 border"></div>
+      <div id="background" class="background"></div>
+    </div>
+    <script src="/index.js"></script>
+    <script>
+      // CND引入将导出全局变量SnowFalls对象，里面包括两个对象
+      // Snow 是最主要的
+      // Mod.Wind、Mod.EleBorder为Snow的功能扩展模块
+      const { Snow, Mod } = SnowFalls;
+      // 实例化Snow类
+      new Snow({
+        // 要添加动画的容器
+        view: document.getElementById("background"),
+        // 加载需要的功能模块
+        modules: [
+          // 载入风力模块，雪花将受风力影响
+          new Mod.Wind(),
+          // 载入元素积雪效果，使用传入的css类名的元素将产生积雪效果
+          new Mod.EleBorder("border"),
+        ],
+        // 屏幕里存在的最大的雪花粒子数量, 默认200。当maxRenderSnow为false时，屏幕中渲染的粒子数量和帧率有关，一般不超过200个
+        snowflakeNum: 500,
+      });
+    </script>
+  </body>
+</html>
+```
+
+## 配置参数
+
+_具体查看 [index.d.ts](lib/index.d.ts) 文件_
+
+## License
+
+MIT

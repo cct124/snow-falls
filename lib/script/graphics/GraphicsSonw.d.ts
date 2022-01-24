@@ -64,6 +64,9 @@ export default class GraphicsSonw extends Particle<graphicsSonwChannel, Graphics
      * 动画开始
      */
     animation: boolean;
+    /**
+     * 开启融化效果，一个透明度逐渐为0的动画效果
+     */
     melt: boolean;
     constructor(options: GraphicsSonwOptions);
     update(dt: number): void;

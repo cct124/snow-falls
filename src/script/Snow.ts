@@ -1,20 +1,14 @@
 import * as PIXI from "pixi.js";
-import { mixins, probability, randomNum } from "../utils";
-import Particle from "./graphics/Particle";
+import { mixins, randomNum } from "../utils";
 import GraphicsSonwPool from "./graphics/GraphicsSonwPool";
 import Snowflake from "./graphics/Snowflake";
 import GraphicsSonw, { graphicsSonwChannel } from "./graphics/GraphicsSonw";
 import { PHYSICAL, WINDS } from "../config";
-import Wind, { WindField } from "./physics/Wind";
+import Wind from "./physics/Wind";
 import Module from "./modules/module";
 
 interface SnowPixi {
   app: PIXI.Application;
-}
-
-interface WindOptions {
-  enable: boolean;
-  winds: WindField[];
 }
 
 export interface SnowOptions {
@@ -71,8 +65,14 @@ export interface SnowOptions {
    */
   graphicsCreateFunction?: () => void | undefined;
 
+  /**
+   * 功能模块扩展
+   */
   modules?: Module[];
 
+  /**
+   * 舞台背景色，默认透明
+   */
   backgroundColor?: number;
 }
 

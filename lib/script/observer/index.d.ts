@@ -1,4 +1,7 @@
 import * as PIXI from "pixi.js";
+/**
+ * 事件类
+ */
 export default class Observer<T, E> extends PIXI.Container {
     private map;
     constructor(observer?: [T, Set<(...args: unknown[]) => void>][]);

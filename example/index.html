@@ -61,10 +61,10 @@
     </div>
     <script src="/index.js"></script>
     <script>
-      const { Snow, Wind, Borders, EleBorder } = SnowFalls;
+      const { Snow, Mod } = SnowFalls;
       new Snow({
         view: document.getElementById("background"),
-        modules: [new Wind(), new EleBorder("border")],
+        modules: [new Mod.Wind(), new Mod.EleBorder("border")],
         snowflakeNum: 500,
       });
     </script>

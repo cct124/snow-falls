@@ -1,9 +1,24 @@
 import GraphicsSonw from "./GraphicsSonw";
 
+/**
+ * 粒子对象池
+ */
 export default class GraphicsSonwPool {
+  /**
+   * 对象池
+   */
   graphicsSonw: GraphicsSonw[] = [];
+  /**
+   * 对象池最大粒子数量
+   */
   graphicsSonwNum = 0;
+  /**
+   * 对象创建函数
+   */
   createParticle: (id: number) => GraphicsSonw;
+  /**
+   * 计数
+   */
   count = 0;
 
   constructor(

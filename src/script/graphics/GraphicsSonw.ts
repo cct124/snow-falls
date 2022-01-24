@@ -1,8 +1,4 @@
 import * as PIXI from "pixi.js";
-import { PHYSICAL } from "../../config";
-import { mixins } from "../../utils";
-import Observer from "../observer";
-import Event from "./Event";
 import Particle from "./Particle";
 
 export interface GraphicsSonwOptions {
@@ -82,6 +78,9 @@ export default class GraphicsSonw extends Particle<
    */
   animation = false;
 
+  /**
+   * 开启融化效果，一个透明度逐渐为0的动画效果
+   */
   melt = false;
 
   constructor(options: GraphicsSonwOptions) {

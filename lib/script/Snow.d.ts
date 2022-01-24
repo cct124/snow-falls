@@ -56,7 +56,14 @@ export interface SnowOptions {
      * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
      */
     graphicsCreateFunction?: () => void | undefined;
+    /**
+     * 功能模块扩展
+     */
     modules?: Module[];
+    /**
+     * 舞台背景色，默认透明
+     */
+    backgroundColor?: number;
 }
 export default class Snow {
     pixi: SnowPixi;
@@ -141,6 +148,7 @@ export default class Snow {
      * 对象池最大对象数量
      */
     graphicsSonwPoolMax: number;
+    backgroundColor: number | undefined;
     constructor(options: SnowOptions);
     /**
      * 载入模块

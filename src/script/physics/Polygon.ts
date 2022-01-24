@@ -1,10 +1,24 @@
 import GraphicsSonw from "../graphics/GraphicsSonw";
 
 export default class Polygon {
+  /**
+   * 多边形点集合
+   */
   points: [number, number][];
+  /**
+   * 在当前多边形堆积的粒子效果
+   */
   snow: GraphicsSonw[] = [];
+  /**
+   * 最大堆积数量
+   */
   snowMaxNum: number;
 
+  /**
+   * 创建积雪多边形
+   * @param points 多边形点集合
+   * @param snowMaxNum 最大堆积数量
+   */
   constructor(points: [number, number][], snowMaxNum = 50) {
     this.points = points;
     this.snowMaxNum = snowMaxNum;

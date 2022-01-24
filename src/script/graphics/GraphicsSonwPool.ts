@@ -4,6 +4,7 @@ export default class GraphicsSonwPool {
   graphicsSonw: GraphicsSonw[] = [];
   graphicsSonwNum = 0;
   createParticle: (id: number) => GraphicsSonw;
+  count = 0;
 
   constructor(
     createParticle: (id: number) => GraphicsSonw,
@@ -16,8 +17,14 @@ export default class GraphicsSonwPool {
 
   fill() {
     for (let i = 0; i < this.graphicsSonwNum; i++) {
+      this.count++;
       this.add(this.createParticle(i));
     }
+  }
+
+  create() {
+    this.count++;
+    this.add(this.createParticle(this.count));
   }
 
   get() {
@@ -25,7 +32,7 @@ export default class GraphicsSonwPool {
   }
 
   add(graphicsSonw: GraphicsSonw) {
-    if (this.graphicsSonw.length >= this.graphicsSonwNum) return undefined;
+    if (this.graphicsSonw.length > this.graphicsSonwNum) return undefined;
     this.graphicsSonw.push(graphicsSonw);
     return graphicsSonw;
   }

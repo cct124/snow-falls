@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
+import Observer from "../observer";
 
-export default class Particle extends PIXI.Container {
+export default class Particle<T, E> extends Observer<T, E> {
   id: number;
   constructor(id: number) {
     super();

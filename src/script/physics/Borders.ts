@@ -3,9 +3,13 @@ import Module from "../modules/module";
 import Snow from "../Snow";
 import Polygon from "./Polygon";
 import * as PIXI from "pixi.js";
+import { graphicsSonwChannel } from "../graphics/GraphicsSonw";
 
 export interface BordersOptions {
-  polygons: [number, number][][];
+  polygons: {
+    points: [number, number][];
+    snowMaxNum: number;
+  }[];
   showPolygon?: boolean;
 }
 
@@ -21,7 +25,7 @@ export default class Borders extends Module {
     super();
     const { polygons, showPolygon } = mixins({ showPolygon: true }, options);
     for (const points of polygons) {
-      this.polygons.add(new Polygon(points));
+      this.polygons.add(new Polygon(points.points, points.snowMaxNum));
     }
     this.showPolygon = showPolygon!;
   }
@@ -36,15 +40,30 @@ export default class Borders extends Module {
 
   ticker(dt: number, snow: Snow) {
     snow.snowflakes.forEach((graphics) => {
+      if (graphics.melt) return;
       this.polygons.forEach((polygon) => {
         if (polygon.inside([graphics.x, graphics.y])) {
-          graphics.animation = false;
-          polygon.snow.push(graphics);
-          polygon.updatePolygon();
-          snow.snowflakes.delete(graphics);
+          if (polygon.add(graphics)) {
+            graphics.animation = false;
+            snow.snowflakes.delete(graphics);
+          } else {
+            graphics.animation = false;
+            graphics.melt = true;
+            const del = graphics.on(graphicsSonwChannel.melt, () => {
+              del();
+              graphics.melt = false;
+              snow.snowflakes.delete(graphics);
+              // if (snow.graphicsSonwPool) snow.graphicsSonwPool.add(graphics);
+            });
+            snow.graphicsSonwPool!.create();
+          }
         }
       });
     });
+  }
+
+  melts() {
+    console.log("melts");
   }
 
   drawPolygon(polygon: Polygon, snow: Snow) {

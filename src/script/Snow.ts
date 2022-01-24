@@ -3,7 +3,7 @@ import { mixins, probability, randomNum } from "../utils";
 import Particle from "./graphics/Particle";
 import GraphicsSonwPool from "./graphics/GraphicsSonwPool";
 import Snowflake from "./graphics/Snowflake";
-import GraphicsSonw from "./graphics/GraphicsSonw";
+import GraphicsSonw, { graphicsSonwChannel } from "./graphics/GraphicsSonw";
 import { PHYSICAL, WINDS } from "../config";
 import Wind, { WindField } from "./physics/Wind";
 import Module from "./modules/module";
@@ -271,19 +271,18 @@ export default class Snow {
       createFunction: this.graphicsCreateFunction,
     });
     // snowflake.windEffect = probability(this.windSnowPerc);
-    snowflake.stops.add((particle) => {
-      this.pixi.app.stage.removeChild(particle);
-      this.snowflakes.delete(particle);
-      this.graphicsSonwPool!.add(particle);
+    snowflake.on(graphicsSonwChannel.stop, ({ target }) => {
+      this.pixi.app.stage.removeChild(target);
+      this.snowflakes.delete(target);
+      this.graphicsSonwPool!.add(target);
     });
     return snowflake;
   }
 
   createSnowflake(particle: GraphicsSonw) {
     const x = randomNum(this.width, 0);
+    particle.reset();
     particle.mx(x);
-    particle.my(0);
-    particle.XF = 0;
     particle.start();
     this.pixi.app.stage.addChild(particle);
   }

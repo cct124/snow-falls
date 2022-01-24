@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { PHYSICAL } from "../../config";
 import { mixins } from "../../utils";
+import Observer from "../observer";
 import Event from "./Event";
 import Particle from "./Particle";
 
@@ -14,7 +15,20 @@ export interface GraphicsSonwOptions {
   id: number;
 }
 
-export default class GraphicsSonw extends Particle {
+export enum graphicsSonwChannel {
+  stop = "stop",
+  melt = "melt",
+}
+
+export interface GraphicsSonwEvent {
+  event: graphicsSonwChannel;
+  target: GraphicsSonw;
+}
+
+export default class GraphicsSonw extends Particle<
+  graphicsSonwChannel,
+  GraphicsSonwEvent
+> {
   app: PIXI.Application;
   frameRate = 1 / 60;
   /**
@@ -63,11 +77,12 @@ export default class GraphicsSonw extends Particle {
    */
   YF = 0;
 
-  stops: Event<GraphicsSonw>;
   /**
    * 动画开始
    */
   animation = false;
+
+  melt = false;
 
   constructor(options: GraphicsSonwOptions) {
     super(options.id);
@@ -80,7 +95,6 @@ export default class GraphicsSonw extends Particle {
     this.ag = options.ag;
     this.A = (Math.PI * this.radius * this.radius) / 10000;
     this.app.ticker.add((dt) => this.update(dt));
-    this.stops = new Event<GraphicsSonw>();
   }
 
   update(dt: number) {
@@ -97,6 +111,26 @@ export default class GraphicsSonw extends Particle {
         this.stop();
       }
     }
+    if (this.melt) {
+      this.alpha -= 0.01;
+      if (this.alpha < 0) {
+        this.melt = false;
+        this.send(graphicsSonwChannel.melt, {
+          event: graphicsSonwChannel.melt,
+          target: this,
+        });
+      }
+    }
+  }
+
+  reset() {
+    this.mx(0);
+    this.my(0);
+    this.XF = 0;
+    this.YF = 0;
+    this.vx = 0;
+    this.vy = 0;
+    this.alpha = 1;
   }
 
   start() {
@@ -105,7 +139,10 @@ export default class GraphicsSonw extends Particle {
 
   stop() {
     this.animation = false;
-    this.stops.run(this);
+    this.send(graphicsSonwChannel.stop, {
+      event: graphicsSonwChannel.stop,
+      target: this,
+    });
   }
 
   setForce(xf = 0, yf = 0) {

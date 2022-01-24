@@ -72,6 +72,8 @@ export interface SnowOptions {
   graphicsCreateFunction?: () => void | undefined;
 
   modules?: Module[];
+
+  backgroundColor?: number;
 }
 
 export default class Snow {
@@ -160,6 +162,8 @@ export default class Snow {
    */
   graphicsSonwPoolMax = 0;
 
+  backgroundColor: number | undefined;
+
   constructor(options: SnowOptions) {
     const {
       view,
@@ -174,6 +178,7 @@ export default class Snow {
       maxRenderSnowDelay,
       snowflakeTextureSrc,
       modules,
+      backgroundColor,
       graphicsCreateFunction,
     } = mixins(
       {
@@ -199,11 +204,13 @@ export default class Snow {
     this.view = view!;
     this.width = this.view.offsetWidth;
     this.height = this.view.offsetHeight;
+    this.backgroundColor = backgroundColor;
     this.pixi = {
       app: new PIXI.Application({
         width: this.width,
         height: this.height,
-        backgroundColor: 0x22313f,
+        transparent: !this.backgroundColor,
+        backgroundColor: this.backgroundColor,
       }),
     };
     this.snowflakeNum = snowflakeNum!;

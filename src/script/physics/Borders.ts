@@ -8,7 +8,7 @@ import { graphicsSonwChannel } from "../graphics/GraphicsSonw";
 export interface BordersOptions {
   polygons: {
     points: [number, number][];
-    snowMaxNum: number;
+    snowMaxNum?: number;
   }[];
   showPolygon?: boolean;
 }
@@ -31,7 +31,7 @@ export default class Borders extends Module {
   }
 
   insert(snow: Snow): this {
-    this.polygons.forEach((polygon) => this.drawPolygon(polygon, snow));
+    // this.polygons.forEach((polygon) => this.drawPolygon(polygon, snow));
     snow.pixi.app.ticker.add((dt: number) => {
       this.ticker(dt, snow);
     });

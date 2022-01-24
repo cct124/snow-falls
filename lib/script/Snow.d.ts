@@ -2,22 +2,156 @@ import * as PIXI from "pixi.js";
 import GraphicsSonwPool from "./graphics/GraphicsSonwPool";
 import Snowflake from "./graphics/Snowflake";
 import GraphicsSonw from "./graphics/GraphicsSonw";
+import Wind from "./physics/Wind";
+import Module from "./modules/module";
 interface SnowPixi {
     app: PIXI.Application;
 }
+export interface SnowOptions {
+    /**
+     * 创建下雪动画的DOM容器
+     */
+    view?: HTMLElement;
+    /**
+     * 在一屏中雪花的最大粒子数量
+     */
+    snowflakeNum?: number;
+    /**
+     * 雪花对象池冗余
+     */
+    redundancy?: number;
+    /**
+     * 空气密度
+     */
+    rho?: number;
+    /**
+     * 重力加速度
+     */
+    ag?: number;
+    /**
+     * 雪花大小随机最大最小取值
+     */
+    snowflakeSize?: [number, number];
+    /**
+     * 雪花阻力系数随机最大最小取值
+     */
+    snowCoeDrag?: [number, number];
+    /**
+     * 雪花质量随机最大最小取值
+     */
+    snowflakeMass?: [number, number];
+    /**
+     * 开启最大渲染
+     */
+    maxRenderSnow?: boolean;
+    /**
+     * 最大渲染延迟
+     */
+    maxRenderSnowDelay?: [number, number];
+    /**
+     * 雪花纹理路径
+     */
+    snowflakeTextureSrc?: string;
+    /**
+     * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
+     */
+    graphicsCreateFunction?: () => void | undefined;
+    modules?: Module[];
+}
 export default class Snow {
-    width: number;
-    height: number;
-    view: HTMLElement;
     pixi: SnowPixi;
-    graphicsSonwPool: GraphicsSonwPool;
+    /**
+     * 画布宽度
+     */
+    width: number;
+    /**
+     * 画布高度
+     */
+    height: number;
+    /**
+     * 创建下雪动画的DOM容器
+     */
+    view: HTMLElement;
+    /**
+     * 雪花对象池
+     */
+    graphicsSonwPool: GraphicsSonwPool | undefined;
+    /**
+     * 在一屏中雪花的最大粒子数量
+     */
     snowflakeNum: number;
+    /**
+     * 雪花对象池冗余
+     */
     redundancy: number;
+    /**
+     * 屏幕中渲染雪花的集合
+     */
     snowflakes: Set<GraphicsSonw>;
-    constructor(view?: HTMLElement, snowflakeNum?: number);
-    newSnowflake(): Snowflake;
-    createSnowflake(): void;
-    ticker(dt: number): void;
+    /**
+     * 空气密度
+     */
+    rho: number;
+    /**
+     * 重力加速度
+     */
+    ag: number;
+    /**
+     * 雪花大小随机最大最小取值
+     */
+    snowflakeSize: [number, number];
+    /**
+     * 雪花阻力系数随机最大最小取值
+     */
+    snowCoeDrag: [number, number];
+    /**
+     * 雪花质量随机最大最小取值
+     */
+    snowflakeMass: [number, number];
+    /**
+     * 风力
+     */
+    wind: Wind | undefined;
+    /**
+     * 受风力影响的雪花百分比
+     */
+    windSnowPerc: number;
+    /**
+     * 最大渲染延迟
+     */
+    maxRenderSnowDelay: [number, number];
+    /**
+     * 载入的模块
+     */
+    modules: Set<Module>;
+    /**
+     * 开启最大渲染
+     */
+    maxRenderSnow: boolean;
+    /**
+     * 位图路径
+     */
+    snowflakeTextureSrc?: string;
+    loader: PIXI.Loader | undefined;
+    /**
+     * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
+     */
+    graphicsCreateFunction?: () => void | undefined;
+    /**
+     * 对象池最大对象数量
+     */
+    graphicsSonwPoolMax: number;
+    constructor(options: SnowOptions);
+    /**
+     * 载入模块
+     */
+    insertModules(): void;
+    loadTexture(loader: PIXI.Loader): void;
+    newSnowflake(id: number, texture?: PIXI.Texture): Snowflake;
+    createSnowflake(particle: GraphicsSonw): void;
+    tickerCreateSnowflake(dt: number): void;
+    gentleRender(): void;
+    maxRender(): void;
     test(): void;
 }
 export {};

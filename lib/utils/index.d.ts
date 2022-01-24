@@ -26,3 +26,9 @@ export declare function shuffle(array: unknown[]): unknown[];
  * @returns
  */
 export declare function mixins<T>(t1: unknown, t2: T): T;
+/**
+ * 给定一个概率将返回符合该概率的true值
+ * @param p
+ * @returns
+ */
+export declare function probability(p: number): boolean;

@@ -1,13 +1,23 @@
 import * as PIXI from "pixi.js";
-import Event from "./Event";
 import Particle from "./Particle";
 export interface GraphicsSonwOptions {
     app: PIXI.Application;
     radius: number;
-    mass?: number;
-    cd?: number;
+    mass: number;
+    cd: number;
+    rho: number;
+    ag: number;
+    id: number;
 }
-export default class GraphicsSonw extends Particle {
+export declare enum graphicsSonwChannel {
+    stop = "stop",
+    melt = "melt"
+}
+export interface GraphicsSonwEvent {
+    event: graphicsSonwChannel;
+    target: GraphicsSonw;
+}
+export default class GraphicsSonw extends Particle<graphicsSonwChannel, GraphicsSonwEvent> {
     app: PIXI.Application;
     frameRate: number;
     /**
@@ -35,6 +45,14 @@ export default class GraphicsSonw extends Particle {
      */
     cd: number;
     /**
+     * 空气密度
+     */
+    rho: number;
+    /**
+     * 重力加速度
+     */
+    ag: number;
+    /**
      * 水平作用于雪花上的力
      */
     XF: number;
@@ -42,15 +60,17 @@ export default class GraphicsSonw extends Particle {
      * 垂直作用于雪花上的力
      */
     YF: number;
-    stops: Event<GraphicsSonw>;
     /**
      * 动画开始
      */
     animation: boolean;
+    melt: boolean;
     constructor(options: GraphicsSonwOptions);
     update(dt: number): void;
+    reset(): void;
     start(): void;
     stop(): void;
+    setForce(xf?: number, yf?: number): void;
     /**
      * 计算位移
      * @returns

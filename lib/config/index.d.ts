@@ -1,3 +1,4 @@
+import { WindField } from "../script/physics/Wind";
 export declare const PHYSICAL: {
     /**
      * 重力加速度
@@ -18,3 +19,4 @@ export declare const PHYSICAL: {
         RE: number;
     };
 };
+export declare const WINDS: WindField[];

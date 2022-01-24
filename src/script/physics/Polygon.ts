@@ -8,6 +8,7 @@ export default class Polygon {
   constructor(points: [number, number][], snowMaxNum = 50) {
     this.points = points;
     this.snowMaxNum = snowMaxNum;
+    console.log(this.snowMaxNum);
   }
 
   add(graphics: GraphicsSonw): boolean {

@@ -3,6 +3,8 @@
 北风啸啸，雪花飘飘，CPU 在燃烧 😘
 _The snow falls and the wind blows cpu is burning_
 
+基于 PIXI.js 的雪花动画
+
 ## 目录
 
 - [安装](#安装)

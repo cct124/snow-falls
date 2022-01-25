@@ -13,7 +13,14 @@
     "type": "git",
     "url": "git+https://github.com/cct124/snow-falls.git"
   },
-  "keywords": [],
+  "keywords": [
+    "canvas",
+    "snow",
+    "pixi",
+    "下雪",
+    "动画",
+    "雪花"
+  ],
   "author": "Jane",
   "license": "MIT",
   "bugs": {

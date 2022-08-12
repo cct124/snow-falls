@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Example</title>
+    <style>
+      html,
+      body,
+      .home,
+      .background {
+        width: 100vw;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .home {
+        position: relative;
+        background-color: #282a36;
+      }
+
+      .background {
+        position: absolute;
+      }
+
+      .box-1 {
+        width: 100px;
+        height: 50px;
+        background-color: #519aba;
+        position: absolute;
+        top: 600px;
+        left: 30%;
+      }
+
+      .box-2 {
+        width: 200px;
+        height: 50px;
+        background-color: #e37933;
+        position: absolute;
+        top: 300px;
+        left: 60%;
+      }
+
+      .box-3 {
+        width: 100px;
+        height: 50px;
+        background-color: #e91e63;
+        position: absolute;
+        top: 200px;
+        left: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="home">
+      <div class="box-1 border"></div>
+      <div class="box-2 border"></div>
+      <div class="box-3 border"></div>
+      <div id="background" class="background"></div>
+    </div>
+    <script src="/index.js"></script>
+    <script>
+      const { Snow, Mod } = SnowFalls;
+      new Snow({
+        view: document.getElementById("background"),
+        modules: [new Mod.Wind(), new Mod.EleBorder("border")],
+        snowflakeNum: 500,
+      });
+    </script>
+  </body>
+</html>

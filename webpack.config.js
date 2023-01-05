@@ -4,7 +4,8 @@ const ENV = process.argv[2] === "--mode=production";
 
 module.exports = {
   entry: "./src/index.ts",
-  devtool: !ENV,
+  devtool: ENV ? "" : "eval",
+  mode: ENV ? "production" : "development",
   module: {
     rules: [
       {

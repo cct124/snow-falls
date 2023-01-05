@@ -64,8 +64,13 @@
       const { Snow, Mod } = SnowFalls;
       new Snow({
         view: document.getElementById("background"),
-        modules: [new Mod.Wind(), new Mod.EleBorder("border")],
-        snowflakeNum: 500,
+        snowflakeTextureSrc: "./petal_20.png",
+        rho: 0.2,
+        snowflakeSize: [5, 10],
+        graphicsRotation: [0, 20],
+        alpha: [0.4, 1],
+        modules: [new Mod.Wind()],
+        snowflakeNum: 70
       });
     </script>
   </body>

@@ -45,6 +45,14 @@ export interface SnowflakeOptions {
    */
   texture?: PIXI.Texture;
   /**
+   * 图形旋转，在自动生成的圆形图形中没有意义
+   */
+  rotation?: number;
+  /**
+   * 图形透明度
+   */
+  alpha?: number;
+  /**
    * 创建函数，传入自定义的创建函数
    */
   createFunction?: () => void | undefined;
@@ -66,13 +74,13 @@ export default class Snowflake extends GraphicsSonw {
 
   texture?: PIXI.Texture;
 
+  alpha: number;
+
   createFunction?: () => void | undefined;
 
   constructor(options: SnowflakeOptions) {
-    const { size, color, x, y, texture, createFunction, id } = mixins(
-      { color: 0xffffff, x: 0, y: 0 },
-      options
-    );
+    const { size, color, x, y, texture, createFunction, id, rotation, alpha } =
+      mixins({ color: 0xffffff, x: 0, y: 0, alpha: 1 }, options);
     super({
       radius: size,
       ...options,
@@ -82,6 +90,8 @@ export default class Snowflake extends GraphicsSonw {
     this.x = x!;
     this.y = y!;
     this.texture = texture;
+    this.alpha = alpha!;
+    
     this.createFunction = createFunction;
     if (this.createFunction) {
       this.createFunction.call(this);
@@ -92,6 +102,13 @@ export default class Snowflake extends GraphicsSonw {
         this.graphics = new PIXI.Graphics();
         this.circle(this.graphics);
       }
+
+      if (rotation) {
+        this.rotation = rotation;
+      }
+
+      if (this.alpha > 0 && this.alpha < 1)
+        this.filters = [new PIXI.filters.AlphaFilter(this.alpha)];
     }
   }
 
@@ -99,6 +116,7 @@ export default class Snowflake extends GraphicsSonw {
     const sprite = new PIXI.Sprite(texture);
     sprite.width = this.size;
     sprite.height = this.size;
+    this.rotation = 2;
     this.addChild(sprite);
   }
 

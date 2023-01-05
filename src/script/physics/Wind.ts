@@ -18,7 +18,7 @@ import Snow from "../Snow";
  *   [0, 0],
  *   [0, 0],
  *   [0, 0],
-*  ],
+ *  ],
  *```
  */
 export type WindField = [number, number][];

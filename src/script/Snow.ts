@@ -74,6 +74,15 @@ export interface SnowOptions {
    * 舞台背景色，默认透明
    */
   backgroundColor?: number;
+
+  /**
+   * 图形随机旋转，在自动生成的圆形图形中没有意义
+   */
+  graphicsRotation?: [number, number];
+  /**
+   * 图形随机透明度变化
+   */
+  alpha?: [number, number];
 }
 
 export default class Snow {
@@ -164,6 +173,10 @@ export default class Snow {
 
   backgroundColor: number | undefined;
 
+  graphicsRotation: [number, number];
+
+  alpha: [number, number];
+
   constructor(options: SnowOptions) {
     const {
       view,
@@ -179,6 +192,8 @@ export default class Snow {
       snowflakeTextureSrc,
       modules,
       backgroundColor,
+      graphicsRotation,
+      alpha,
       graphicsCreateFunction,
     } = mixins(
       {
@@ -197,6 +212,8 @@ export default class Snow {
         maxRenderSnow: false,
         maxRenderSnowDelay: [4000, 1000],
         switchWindTime: [4000, 2000],
+        graphicsRotation: [0, 0],
+        alpha: [1, 1],
         modules: [],
       },
       options
@@ -225,6 +242,8 @@ export default class Snow {
     this.snowflakeTextureSrc = snowflakeTextureSrc;
     this.graphicsCreateFunction = graphicsCreateFunction;
     this.graphicsSonwPoolMax = this.snowflakeNum + this.redundancy;
+    this.graphicsRotation = graphicsRotation!;
+    this.alpha = alpha!;
     //导入模块
     this.modules = new Set(modules);
 
@@ -232,6 +251,7 @@ export default class Snow {
       this.loader = new PIXI.Loader();
       this.loader.onComplete.add((loader) => {
         this.loadTexture(loader);
+        this.insertModules();
       });
       this.loader.add("snow", this.snowflakeTextureSrc);
       this.loader.load();
@@ -242,9 +262,8 @@ export default class Snow {
       );
       this.view.appendChild(this.pixi.app.view);
       this.pixi.app.ticker.add((dt) => this.tickerCreateSnowflake(dt));
+      this.insertModules();
     }
-
-    this.insertModules();
   }
 
   /**
@@ -272,6 +291,8 @@ export default class Snow {
       size: randomNum(this.snowflakeSize[0], this.snowflakeSize[1], 2),
       cd: randomNum(this.snowCoeDrag[0], this.snowCoeDrag[1], 2),
       mass: randomNum(this.snowflakeMass[0], this.snowflakeMass[1], 4),
+      rotation: randomNum(this.graphicsRotation[0], this.graphicsRotation[1]),
+      alpha: randomNum(this.alpha[0], this.alpha[1], 2),
       rho: this.rho,
       ag: this.ag,
       texture: texture,

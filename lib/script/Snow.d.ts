@@ -64,6 +64,14 @@ export interface SnowOptions {
      * 舞台背景色，默认透明
      */
     backgroundColor?: number;
+    /**
+     * 图形随机旋转，在自动生成的圆形图形中没有意义
+     */
+    graphicsRotation?: [number, number];
+    /**
+     * 图形随机透明度变化
+     */
+    alpha?: [number, number];
 }
 export default class Snow {
     pixi: SnowPixi;
@@ -149,6 +157,8 @@ export default class Snow {
      */
     graphicsSonwPoolMax: number;
     backgroundColor: number | undefined;
+    graphicsRotation: [number, number];
+    alpha: [number, number];
     constructor(options: SnowOptions);
     /**
      * 载入模块

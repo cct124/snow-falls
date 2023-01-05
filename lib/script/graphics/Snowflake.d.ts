@@ -43,6 +43,14 @@ export interface SnowflakeOptions {
      */
     texture?: PIXI.Texture;
     /**
+     * 图形旋转，在自动生成的圆形图形中没有意义
+     */
+    rotation?: number;
+    /**
+     * 图形透明度
+     */
+    alpha?: number;
+    /**
      * 创建函数，传入自定义的创建函数
      */
     createFunction?: () => void | undefined;
@@ -61,6 +69,7 @@ export default class Snowflake extends GraphicsSonw {
      */
     size: number;
     texture?: PIXI.Texture;
+    alpha: number;
     createFunction?: () => void | undefined;
     constructor(options: SnowflakeOptions);
     bitmap(texture: PIXI.Texture): void;

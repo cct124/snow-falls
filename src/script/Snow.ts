@@ -369,6 +369,7 @@ export default class Snow {
     const x = randomNum(this.width, 0);
     particle.reset();
     particle.mx(x);
+    particle.my(-particle.height);
     particle.start();
     this.pixi.app.stage.addChild(particle);
   }

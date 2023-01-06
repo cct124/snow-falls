@@ -165,7 +165,7 @@ export default class Snow {
   /**
    * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
    */
-  graphicsCreateFunction?: () => void | undefined;
+  graphicsCreateFunction?: (this: Snowflake) => void | undefined;
   /**
    * 对象池最大对象数量
    */

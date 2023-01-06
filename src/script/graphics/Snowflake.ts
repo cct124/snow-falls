@@ -55,7 +55,7 @@ export interface SnowflakeOptions {
   /**
    * 创建函数，传入自定义的创建函数
    */
-  createFunction?: () => void | undefined;
+  createFunction?: (this: Snowflake) => void | undefined;
 }
 
 /**
@@ -76,7 +76,7 @@ export default class Snowflake extends GraphicsSonw {
 
   alpha: number;
 
-  createFunction?: () => void | undefined;
+  createFunction?: (this: this) => void | undefined;
 
   constructor(options: SnowflakeOptions) {
     const { size, color, x, y, texture, createFunction, id, rotation, alpha } =
@@ -91,7 +91,7 @@ export default class Snowflake extends GraphicsSonw {
     this.y = y!;
     this.texture = texture;
     this.alpha = alpha!;
-    
+
     this.createFunction = createFunction;
     if (this.createFunction) {
       this.createFunction.call(this);

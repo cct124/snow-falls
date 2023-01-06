@@ -53,7 +53,7 @@ export interface SnowflakeOptions {
     /**
      * 创建函数，传入自定义的创建函数
      */
-    createFunction?: () => void | undefined;
+    createFunction?: (this: Snowflake) => void | undefined;
 }
 /**
  * 雪花类
@@ -70,7 +70,7 @@ export default class Snowflake extends GraphicsSonw {
     size: number;
     texture?: PIXI.Texture;
     alpha: number;
-    createFunction?: () => void | undefined;
+    createFunction?: (this: this) => void | undefined;
     constructor(options: SnowflakeOptions);
     bitmap(texture: PIXI.Texture): void;
     circle(graphics: PIXI.Graphics): void;

@@ -19,7 +19,11 @@ export default class GraphicsSonwPool {
      * 计数
      */
     count: number;
-    constructor(createParticle: (id: number) => GraphicsSonw, graphicsSonwNum: number);
+    /**
+     * 延迟创建雪花时间范围
+     */
+    delayedCreation: [number, number];
+    constructor(createParticle: (id: number) => GraphicsSonw, graphicsSonwNum: number, delayedCreation: [number, number]);
     fill(): void;
     create(): void;
     get(): GraphicsSonw | undefined;

@@ -126,6 +126,59 @@ CDN:
 </html>
 ```
 
+## 其它用法
+
+### 将图形替换为图片
+
+```js
+new Snow({
+  view: document.getElementById("background"),
+  // 自动创建的图形替换为图片
+  snowflakeTextureSrcs: [
+    "./petal_01.png",
+    "./petal_02.png",
+    "./petal_03.png",
+    "./petal_04.png",
+    "./petal_05.png",
+  ],
+  snowflakeSize: [12, 8],
+  graphicsRotation: [3, 0],
+  modules: [new Mod.Wind()],
+});
+```
+
+#### 效果
+
+<div style="margin-bottom: 5px">
+  <img src="docs/example_02.png" width="200" />
+</div>
+
+### 自定义图形创建方法
+
+```ts
+new SnowFalls.Snow({
+  view: snowCanvas.value,
+  rho: 2,
+  snowflakeSize: [1, 2],
+  // 替换原本的图形创建方法，实现更复杂的图形创建
+  graphicsCreateFunction(this: Snowflake) {
+    const graphics = new PIXI.Graphics();
+    graphics.lineStyle(1, 0xffffff);
+    graphics.beginFill(0x35cc5a, 1);
+    // 创建矩形
+    graphics.drawRect(4, 4, 4, 4);
+    graphics.endFill();
+    this.addChild(graphics as any);
+  },
+});
+```
+
+#### 效果
+
+<div style="margin-bottom: 5px">
+  <img src="docs/example_03.png" width="200" />
+</div>
+
 ## 配置参数
 
 _具体查看 [index.d.ts](lib/index.d.ts) 文件_

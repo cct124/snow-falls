@@ -1,3 +1,4 @@
+import { probability, randomNum, timeout } from "../../utils";
 import GraphicsSonw from "./GraphicsSonw";
 
 /**
@@ -20,21 +21,30 @@ export default class GraphicsSonwPool {
    * 计数
    */
   count = 0;
+  /**
+   * 延迟创建雪花时间范围
+   */
+  delayedCreation: [number, number];
 
   constructor(
     createParticle: (id: number) => GraphicsSonw,
-    graphicsSonwNum: number
+    graphicsSonwNum: number,
+    delayedCreation: [number, number]
   ) {
     this.graphicsSonwNum = graphicsSonwNum;
+    this.delayedCreation = delayedCreation;
     this.createParticle = createParticle;
     this.fill();
   }
 
   fill() {
-    for (let i = 0; i < this.graphicsSonwNum; i++) {
+    timeout(() => {
+      this.add(this.createParticle(this.count));
       this.count++;
-      this.add(this.createParticle(i));
-    }
+      if (this.graphicsSonwNum >= this.count) {
+        this.fill();
+      }
+    }, randomNum(this.delayedCreation[0], this.delayedCreation[1]));
   }
 
   create() {

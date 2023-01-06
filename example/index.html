@@ -22,6 +22,7 @@
 
       .background {
         position: absolute;
+        /* opacity: 0.6; */
       }
 
       .box-1 {
@@ -54,9 +55,9 @@
   </head>
   <body>
     <div class="home">
-      <div class="box-1 border"></div>
+      <!-- <div class="box-1 border"></div>
       <div class="box-2 border"></div>
-      <div class="box-3 border"></div>
+      <div class="box-3 border"></div> -->
       <div id="background" class="background"></div>
     </div>
     <script src="/index.js"></script>
@@ -64,13 +65,19 @@
       const { Snow, Mod } = SnowFalls;
       new Snow({
         view: document.getElementById("background"),
-        snowflakeTextureSrc: "./petal_20.png",
-        rho: 0.2,
-        snowflakeSize: [5, 10],
-        graphicsRotation: [0, 20],
-        alpha: [0.4, 1],
+        // snowflakeTextureSrc: "./petal_20.png",
+        snowflakeTextureSrcs: [
+          "./petal_01.png",
+          "./petal_02.png",
+          "./petal_03.png",
+          "./petal_04.png",
+          "./petal_05.png",
+        ],
+        // rho: 0.8,
+        snowflakeSize: [12, 8],
+        // graphicsAngle: [10, 0],
+        graphicsRotation: [3, 0],
         modules: [new Mod.Wind()],
-        snowflakeNum: 70
       });
     </script>
   </body>

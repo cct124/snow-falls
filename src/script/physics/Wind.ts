@@ -52,7 +52,7 @@ export default class Wind extends Module {
   switchWindTime: [number, number];
   windSnowPerc: number | undefined;
 
-  constructor(options: WindOptions) {
+  constructor(options: WindOptions = {}) {
     super();
     const { height, winds, switchWindTime, windSnowPerc } = mixins(
       {

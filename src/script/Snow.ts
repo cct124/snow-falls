@@ -59,7 +59,10 @@ export interface SnowOptions {
    * 雪花纹理路径
    */
   snowflakeTextureSrc?: string;
-
+  /**
+   * 多个位图，将平均填充对象池，如传入`4`张图片路径，对象池数量为`200`，则每个位图生成的数量为`200/4`
+   */
+  snowflakeTextureSrcs?: string[];
   /**
    * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
    */
@@ -76,13 +79,22 @@ export interface SnowOptions {
   backgroundColor?: number;
 
   /**
-   * 图形随机旋转，在自动生成的圆形图形中没有意义
+   * 图形随机旋转，在自动生成的圆形图形中没有意义，弧度值
    */
   graphicsRotation?: [number, number];
+  /**
+   * 图形随机旋转，在自动生成的圆形图形中没有意义，角度值
+   */
+  graphicsAngle?: [number, number];
   /**
    * 图形随机透明度变化
    */
   alpha?: [number, number];
+
+  /**
+   * 延迟创建雪花时间范围
+   */
+  delayedCreation?: [number, number];
 }
 
 export default class Snow {
@@ -160,6 +172,10 @@ export default class Snow {
    * 位图路径
    */
   snowflakeTextureSrc?: string;
+  /**
+   * 多个位图，将平均填充对象池，如传入`4`张图片路径，对象池数量为`200`，则每个位图生成的数量为`200/4`
+   */
+  snowflakeTextureSrcs?: string[];
 
   loader: PIXI.Loader | undefined;
   /**
@@ -176,6 +192,10 @@ export default class Snow {
   graphicsRotation: [number, number];
 
   alpha: [number, number];
+
+  graphicsAngle: [number, number];
+
+  delayedCreation: [number, number];
 
   constructor(options: SnowOptions) {
     const {
@@ -194,6 +214,9 @@ export default class Snow {
       backgroundColor,
       graphicsRotation,
       alpha,
+      snowflakeTextureSrcs,
+      graphicsAngle,
+      delayedCreation,
       graphicsCreateFunction,
     } = mixins(
       {
@@ -213,7 +236,9 @@ export default class Snow {
         maxRenderSnowDelay: [4000, 1000],
         switchWindTime: [4000, 2000],
         graphicsRotation: [0, 0],
+        graphicsAngle: [0, 0],
         alpha: [1, 1],
+        delayedCreation: [200, 50],
         modules: [],
       },
       options
@@ -240,10 +265,13 @@ export default class Snow {
     this.maxRenderSnow = maxRenderSnow!;
     this.maxRenderSnowDelay = maxRenderSnowDelay!;
     this.snowflakeTextureSrc = snowflakeTextureSrc;
+    this.snowflakeTextureSrcs = snowflakeTextureSrcs;
     this.graphicsCreateFunction = graphicsCreateFunction;
     this.graphicsSonwPoolMax = this.snowflakeNum + this.redundancy;
     this.graphicsRotation = graphicsRotation!;
+    this.graphicsAngle = graphicsAngle!;
     this.alpha = alpha!;
+    this.delayedCreation = delayedCreation!;
     //导入模块
     this.modules = new Set(modules);
 
@@ -255,10 +283,25 @@ export default class Snow {
       });
       this.loader.add("snow", this.snowflakeTextureSrc);
       this.loader.load();
+    } else if (
+      this.snowflakeTextureSrcs &&
+      this.snowflakeTextureSrcs.length > 0
+    ) {
+      this.loader = new PIXI.Loader();
+      this.loader.onComplete.add((loader) => {
+        this.loadTextures(loader);
+        this.insertModules();
+      });
+
+      for (const [i, src] of this.snowflakeTextureSrcs.entries()) {
+        this.loader.add(i.toString(), src);
+      }
+      this.loader.load();
     } else {
       this.graphicsSonwPool = new GraphicsSonwPool(
         (id: number) => this.newSnowflake(id),
-        this.graphicsSonwPoolMax
+        this.graphicsSonwPoolMax,
+        this.delayedCreation
       );
       this.view.appendChild(this.pixi.app.view);
       this.pixi.app.ticker.add((dt) => this.tickerCreateSnowflake(dt));
@@ -278,7 +321,21 @@ export default class Snow {
   loadTexture(loader: PIXI.Loader) {
     this.graphicsSonwPool = new GraphicsSonwPool(
       (id: number) => this.newSnowflake(id, loader.resources["snow"].texture),
-      this.graphicsSonwPoolMax
+      this.graphicsSonwPoolMax,
+      this.delayedCreation
+    );
+    this.view.appendChild(this.pixi.app.view);
+    this.pixi.app.ticker.add((dt) => this.tickerCreateSnowflake(dt));
+  }
+
+  loadTextures(loader: PIXI.Loader) {
+    this.graphicsSonwPool = new GraphicsSonwPool(
+      (id: number) => {
+        const i = randomNum(this.snowflakeTextureSrcs!.length - 1, 0);
+        return this.newSnowflake(id, loader.resources[i].texture);
+      },
+      this.graphicsSonwPoolMax,
+      this.delayedCreation
     );
     this.view.appendChild(this.pixi.app.view);
     this.pixi.app.ticker.add((dt) => this.tickerCreateSnowflake(dt));
@@ -292,6 +349,7 @@ export default class Snow {
       cd: randomNum(this.snowCoeDrag[0], this.snowCoeDrag[1], 2),
       mass: randomNum(this.snowflakeMass[0], this.snowflakeMass[1], 4),
       rotation: randomNum(this.graphicsRotation[0], this.graphicsRotation[1]),
+      angle: randomNum(this.graphicsAngle[0], this.graphicsAngle[1]),
       alpha: randomNum(this.alpha[0], this.alpha[1], 2),
       rho: this.rho,
       ag: this.ag,

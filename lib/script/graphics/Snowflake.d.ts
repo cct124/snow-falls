@@ -43,9 +43,13 @@ export interface SnowflakeOptions {
      */
     texture?: PIXI.Texture;
     /**
-     * 图形旋转，在自动生成的圆形图形中没有意义
+     * 图形旋转，在自动生成的圆形图形中没有意义，弧度值
      */
     rotation?: number;
+    /**
+     * 图形旋转，在自动生成的圆形图形中没有意义，角度值
+     */
+    angle?: number;
     /**
      * 图形透明度
      */

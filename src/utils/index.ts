@@ -61,7 +61,7 @@ export function shuffle(array: unknown[]): unknown[] {
  * @param t2
  * @returns
  */
-export function mixins<T>(t1: unknown, t2: T): T {
+export function mixins<T>(t1: any, t2: T): T {
   return Object.assign(t1, t2);
 }
 
@@ -74,4 +74,23 @@ export function probability(p: number) {
   const pr = p * 100;
   const ran = randomNum(100, 0);
   return pr >= ran;
+}
+
+/**
+ * 基于 [requestAnimationFrame](https://developer.mozilla.org/zh-CN/docs/Web/API/window/requestAnimationFrame) 实现的定时器
+ * @param callback
+ * @param ms
+ */
+export function timeout(callback: (time: number) => void, ms = 0) {
+  let start: number | undefined;
+  function step(timestamp: number) {
+    if (start === undefined) start = timestamp;
+    const elapsed = timestamp - start;
+    if (elapsed < ms) {
+      window.requestAnimationFrame(step);
+    } else {
+      return callback(elapsed);
+    }
+  }
+  window.requestAnimationFrame(step);
 }

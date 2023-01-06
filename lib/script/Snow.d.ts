@@ -53,6 +53,10 @@ export interface SnowOptions {
      */
     snowflakeTextureSrc?: string;
     /**
+     * 多个位图，将平均填充对象池，如传入`4`张图片路径，对象池数量为`200`，则每个位图生成的数量为`200/4`
+     */
+    snowflakeTextureSrcs?: string[];
+    /**
      * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
      */
     graphicsCreateFunction?: () => void | undefined;
@@ -65,13 +69,21 @@ export interface SnowOptions {
      */
     backgroundColor?: number;
     /**
-     * 图形随机旋转，在自动生成的圆形图形中没有意义
+     * 图形随机旋转，在自动生成的圆形图形中没有意义，弧度值
      */
     graphicsRotation?: [number, number];
+    /**
+     * 图形随机旋转，在自动生成的圆形图形中没有意义，角度值
+     */
+    graphicsAngle?: [number, number];
     /**
      * 图形随机透明度变化
      */
     alpha?: [number, number];
+    /**
+     * 延迟创建雪花时间范围
+     */
+    delayedCreation?: [number, number];
 }
 export default class Snow {
     pixi: SnowPixi;
@@ -147,6 +159,10 @@ export default class Snow {
      * 位图路径
      */
     snowflakeTextureSrc?: string;
+    /**
+     * 多个位图，将平均填充对象池，如传入`4`张图片路径，对象池数量为`200`，则每个位图生成的数量为`200/4`
+     */
+    snowflakeTextureSrcs?: string[];
     loader: PIXI.Loader | undefined;
     /**
      * 图形创建处理函数，可替换原有的图形创建函数以自定义雪花图形
@@ -159,12 +175,15 @@ export default class Snow {
     backgroundColor: number | undefined;
     graphicsRotation: [number, number];
     alpha: [number, number];
+    graphicsAngle: [number, number];
+    delayedCreation: [number, number];
     constructor(options: SnowOptions);
     /**
      * 载入模块
      */
     insertModules(): void;
     loadTexture(loader: PIXI.Loader): void;
+    loadTextures(loader: PIXI.Loader): void;
     newSnowflake(id: number, texture?: PIXI.Texture): Snowflake;
     createSnowflake(particle: GraphicsSonw): void;
     tickerCreateSnowflake(dt: number): void;

@@ -46,7 +46,7 @@ export default class Wind extends Module {
     windField: number;
     switchWindTime: [number, number];
     windSnowPerc: number | undefined;
-    constructor(options: WindOptions);
+    constructor(options?: WindOptions);
     nextWindField(): void;
     getCurrentWindForce(y: number): {
         xf: number;

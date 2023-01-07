@@ -1,6 +1,6 @@
 {
   "name": "snow-falls",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "The snow falls and the wind blows",
   "main": "index.js",
   "types": "lib/index.d.ts",

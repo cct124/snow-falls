@@ -23,7 +23,11 @@ export default class GraphicsSonwPool {
      * 延迟创建雪花时间范围
      */
     delayedCreation: [number, number];
-    constructor(createParticle: (id: number) => GraphicsSonw, graphicsSonwNum: number, delayedCreation: [number, number]);
+    /**
+     * 是否开启最大渲染
+     */
+    maxRenderSnow: boolean;
+    constructor(createParticle: (id: number) => GraphicsSonw, graphicsSonwNum: number, delayedCreation: [number, number], maxRenderSnow: boolean);
     fill(): void;
     create(): void;
     get(): GraphicsSonw | undefined;

@@ -41,13 +41,9 @@ export interface SnowOptions {
      */
     snowflakeMass?: [number, number];
     /**
-     * 开启最大渲染
+     * 开启最大渲染，开启最大渲染时设置delayedCreation时间将失效
      */
     maxRenderSnow?: boolean;
-    /**
-     * 最大渲染延迟
-     */
-    maxRenderSnowDelay?: [number, number];
     /**
      * 雪花纹理路径
      */
@@ -144,10 +140,6 @@ export default class Snow {
      */
     windSnowPerc: number;
     /**
-     * 最大渲染延迟
-     */
-    maxRenderSnowDelay: [number, number];
-    /**
      * 载入的模块
      */
     modules: Set<Module>;
@@ -189,6 +181,5 @@ export default class Snow {
     tickerCreateSnowflake(dt: number): void;
     gentleRender(): void;
     maxRender(): void;
-    test(): void;
 }
 export {};

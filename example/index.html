@@ -65,6 +65,8 @@
       const { Snow, Mod } = SnowFalls;
       new Snow({
         view: document.getElementById("background"),
+        snowflakeNum: 600,
+        // maxRenderSnow: true,
         // snowflakeTextureSrc: "./petal_20.png",
         snowflakeTextureSrcs: [
           "./petal_01.png",
@@ -73,11 +75,12 @@
           "./petal_04.png",
           "./petal_05.png",
         ],
-        // rho: 0.8,
+        delayedCreation: [400, 0],
+        // // rho: 0.8,
         snowflakeSize: [12, 8],
-        // graphicsAngle: [10, 0],
+        // // graphicsAngle: [10, 0],
         graphicsRotation: [3, 0],
-        modules: [new Mod.Wind()],
+        // modules: [new Mod.Wind()],
       });
     </script>
   </body>
